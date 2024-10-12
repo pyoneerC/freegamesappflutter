@@ -23,7 +23,7 @@ class Giveaway {
       title: json['title'] ?? 'No Title', // Default value for title
       platforms: json['platforms'] ?? 'Unknown', // Default value for platforms
       worth: json['worth'] ?? 'N/A', // Default value for worth
-      endDate: json['end_date'] ?? "N/A", // Handle null end_date
+      endDate: (json['end_date'] ?? "N/A") == "N/A" ? "Never" : json['end_date'], // Replace "N/A" with "Never"
       imageUrl: json['image_url'] ?? 'default_image.png', // Default image URL if missing
       openGiveawayUrl: json['open_giveaway_url'] ?? '', // Default empty URL
       description: json['description'], // Capture description for DLC
