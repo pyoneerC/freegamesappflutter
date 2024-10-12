@@ -334,15 +334,15 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
       bottomNavigationBar: BottomNavigationBar(
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.gamepad),
+            icon: Icon(Icons.apps),
             label: 'Other Giveaways',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.star),
+            icon: Icon(Icons.videogame_asset_rounded),
             label: 'Game Giveaways',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.card_giftcard),
+            icon: Icon(Icons.extension),
             label: 'DLC Giveaways',
           ),
         ],
