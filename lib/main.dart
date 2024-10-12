@@ -44,23 +44,24 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
   final ApiService apiService = ApiService();
   Future<List<Giveaway>>? _futureGiveaways;
   String _lastRefreshed = '';
-  int _selectedIndex = 0; // Track the selected index for the bottom navigation
+  int _selectedIndex = 0; // Initially set to middle tab (Game Giveaways)
   String _searchQuery = '';
 
   @override
   void initState() {
     super.initState();
+    _selectedIndex = 1; // Set the initial selected index to Game Giveaways
     _refreshGiveaways();
   }
 
   Future<void> _refreshGiveaways() async {
     setState(() {
       switch (_selectedIndex) {
-        case 0: // Game Giveaways
-          _futureGiveaways = apiService.fetchGiveaways();
-          break;
-        case 1: // Other Giveaways
+        case 0: // Other Giveaways
           _futureGiveaways = apiService.fetchOtherGiveaways();
+          break;
+        case 1: // Game Giveaways
+          _futureGiveaways = apiService.fetchGiveaways();
           break;
         case 2: // DLC Giveaways
           _futureGiveaways = apiService.fetchDlcGiveaways();
@@ -268,8 +269,6 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
                       );
                     },
                   );
-
-
                 },
               ),
             ),
@@ -288,11 +287,11 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.gamepad),
-            label: 'Game Giveaways',
+            label: 'Other Giveaways',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.star),
-            label: 'Other Giveaways',
+            label: 'Game Giveaways',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.card_giftcard),
@@ -321,7 +320,7 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
           hintText: 'Search giveaways...',
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30.0), // Make it round
-            borderSide: BorderSide(color: Colors.blueAccent),
+            borderSide: const BorderSide(color: Colors.blueAccent),
           ),
           filled: true,
           fillColor: Colors.white,
