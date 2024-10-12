@@ -372,10 +372,11 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blueAccent,
-        unselectedItemColor: Colors.black54,
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.black87,
         onTap: _onItemTapped,
         type: BottomNavigationBarType.fixed,
+        backgroundColor: Colors.blueAccent,
       ),
     );
   }
