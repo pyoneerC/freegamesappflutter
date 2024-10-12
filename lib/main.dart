@@ -56,7 +56,7 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
   Future<void> _refreshGiveaways() async {
     setState(() {
       switch (_selectedIndex) {
-        case 0: // Giveaways
+        case 0: // Game Giveaways
           _futureGiveaways = apiService.fetchGiveaways();
           break;
         case 1: // Other Giveaways
@@ -142,7 +142,7 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(8.0),
                                 child: Image.network(
-                                  "https://th.bing.com/th/id/OIP.zAibgViO82lC2GvdEFnX3QAAAA?w=160&h=180&c=7&r=0&o=5&pid=1.7",
+                                  giveaway.imageUrl,
                                   width: 100,
                                   height: 100,
                                   fit: BoxFit.cover,
@@ -189,6 +189,21 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.green,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 8.0),
+                                        // Clock icon for end date
+                                        const Icon(
+                                          Icons.access_time,
+                                          size: 16,
+                                          color: Colors.black54,
+                                        ),
+                                        const SizedBox(width: 4.0),
+                                        Text(
+                                          giveaway.endDate, // Display end date
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.black54,
                                           ),
                                         ),
                                       ],
