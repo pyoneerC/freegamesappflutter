@@ -193,7 +193,6 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
                                           ),
                                         ),
                                         const SizedBox(width: 8.0),
-                                        // Add shop icon and platforms string here
                                         const Icon(
                                           Icons.store, // Shop icon
                                           size: 16,
@@ -208,7 +207,6 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
                                           ),
                                         ),
                                         const SizedBox(width: 8.0),
-                                        // Clock icon for end date
                                         const Icon(
                                           Icons.access_time,
                                           size: 16,
@@ -224,6 +222,21 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
                                         ),
                                       ],
                                     ),
+                                    // Check if it's a DLC giveaway to display the description
+                                    if (_selectedIndex == 2 && giveaway.description != null)
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 8.0),
+                                        child: Text(
+                                          '"${giveaway.description}"', // Add quotes around the description
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.black54,
+                                            fontStyle: FontStyle.italic, // Italicize the text
+                                          ),
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
                                   ],
                                 ),
                               ),
@@ -255,6 +268,7 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
                       );
                     },
                   );
+
 
                 },
               ),
