@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:share_plus/share_plus.dart'; // Import the share_plus package
 import 'api_service.dart';
 import 'giveaway.dart';
 
@@ -44,6 +45,7 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
   Future<List<Giveaway>>? _futureGiveaways;
   String _lastRefreshed = '';
   int _selectedIndex = 0; // Track the selected index for the bottom navigation
+  String _searchQuery = '';
 
   @override
   void initState() {
@@ -82,17 +84,16 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Free Games Tracker',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        title: const Text('Free Games Tracker'),
         centerTitle: true,
         elevation: 4,
         backgroundColor: Colors.blueAccent,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: _refreshGiveaways,
+          ),
+        ],
       ),
       body: Container(
         decoration: const BoxDecoration(
@@ -104,6 +105,7 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
         ),
         child: Column(
           children: [
+            _buildSearchBar(),
             Expanded(
               child: FutureBuilder<List<Giveaway>>(
                 future: _futureGiveaways,
@@ -117,12 +119,16 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
                   }
 
                   final giveaways = snapshot.data!;
+                  // Filter giveaways based on search query
+                  final filteredGiveaways = giveaways.where((giveaway) {
+                    return giveaway.title.toLowerCase().contains(_searchQuery);
+                  }).toList();
 
                   return ListView.builder(
                     padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
-                    itemCount: giveaways.length,
+                    itemCount: filteredGiveaways.length,
                     itemBuilder: (context, index) {
-                      final giveaway = giveaways[index];
+                      final giveaway = filteredGiveaways[index];
                       return Card(
                         margin: const EdgeInsets.symmetric(vertical: 8.0),
                         elevation: 8.0,
@@ -190,16 +196,27 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
                                   ],
                                 ),
                               ),
-                              IconButton(
-                                icon: const Icon(Icons.open_in_new),
-                                onPressed: () async {
-                                  final url = giveaway.openGiveawayUrl;
-                                  if (await canLaunch(url)) {
-                                    await launch(url);
-                                  } else {
-                                    throw 'Could not launch $url';
-                                  }
-                                },
+                              Column(
+                                children: [
+                                  IconButton(
+                                    icon: const Icon(Icons.open_in_new),
+                                    onPressed: () async {
+                                      final url = giveaway.openGiveawayUrl;
+                                      if (await canLaunch(url)) {
+                                        await launch(url);
+                                      } else {
+                                        throw 'Could not launch $url';
+                                      }
+                                    },
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.share),
+                                    onPressed: () {
+                                      final url = giveaway.openGiveawayUrl;
+                                      Share.share('Check out this giveaway: $url');
+                                    },
+                                  ),
+                                ],
                               ),
                             ],
                           ),
@@ -241,6 +258,34 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
         unselectedItemColor: Colors.black54,
         onTap: _onItemTapped,
         type: BottomNavigationBarType.fixed,
+      ),
+    );
+  }
+
+  Widget _buildSearchBar() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: TextField(
+        onChanged: (value) {
+          setState(() {
+            _searchQuery = value.toLowerCase();
+          });
+        },
+        decoration: InputDecoration(
+          hintText: 'Search giveaways...',
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(30.0), // Make it round
+            borderSide: BorderSide(color: Colors.blueAccent),
+          ),
+          filled: true,
+          fillColor: Colors.white,
+          prefixIcon: const Icon(Icons.search, color: Colors.black54),
+          contentPadding: const EdgeInsets.all(16.0),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(30.0),
+            borderSide: const BorderSide(color: Colors.blueAccent),
+          ),
+        ),
       ),
     );
   }

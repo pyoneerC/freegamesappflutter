@@ -101,10 +101,10 @@ packages:
     dependency: transitive
     description:
       name: file
-      sha256: a3b4f84adafef897088c160faf7dfffb7696046cb13ae90b508c2cbc95d3b8d4
+      sha256: "1b92bec4fc2a72f59a8e15af5f52cd441e4a7860b49499d69dfa817af20e925d"
       url: "https://pub.dev"
     source: hosted
-    version: "7.0.1"
+    version: "6.1.4"
   fixnum:
     dependency: transitive
     description:
@@ -224,6 +224,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.15.0"
+  mime:
+    dependency: transitive
+    description:
+      name: mime
+      sha256: "801fd0b26f14a4a58ccb09d5892c3fbdeff209594300a542492cf13fba9d247a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.6"
   octo_image:
     dependency: transitive
     description:
@@ -312,6 +320,54 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.27.7"
+  share_plus:
+    dependency: "direct main"
+    description:
+      name: share_plus
+      sha256: "19ca1711da65e3f6e637b8a8cef2810fb5985105a7657918286e7e65c3ee173c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.0"
+  share_plus_linux:
+    dependency: transitive
+    description:
+      name: share_plus_linux
+      sha256: c217d158bb0f2374dd8cf655160be13f8ace4d2555804cb2932a68141a315456
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.4"
+  share_plus_macos:
+    dependency: transitive
+    description:
+      name: share_plus_macos
+      sha256: "3f12572a41dc59116559c8759a31d3a34b8350ffebefc516206f8c128e114658"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.0"
+  share_plus_platform_interface:
+    dependency: transitive
+    description:
+      name: share_plus_platform_interface
+      sha256: a15bc981f3169a95a5c8b6c2646cfb31cf8452ecf86cb491da1a61a7cee5cec5
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.0"
+  share_plus_web:
+    dependency: transitive
+    description:
+      name: share_plus_web
+      sha256: b121451985255d61cfd30079fcfb25fd9c8a8e0222d25a7994e78175610f4357
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.4"
+  share_plus_windows:
+    dependency: transitive
+    description:
+      name: share_plus_windows
+      sha256: "42cdcbc99652eceae5257eed9b06a26566d36ffc0238026ab71cb34102e05ae3"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.3"
   sky_engine:
     dependency: transitive
     description: flutter
