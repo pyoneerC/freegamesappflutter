@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:google_fonts/google_fonts.dart'; // Import Google Fonts
 import 'api_service.dart';
 import 'giveaway.dart';
 
@@ -17,10 +18,14 @@ class GiveawaysApp extends StatelessWidget {
       title: 'Giveaways App',
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        textTheme: const TextTheme(
-          bodyLarge: TextStyle(color: Colors.black87),
-          bodyMedium: TextStyle(color: Colors.black54),
-          headlineSmall: TextStyle(
+        textTheme: TextTheme(
+          bodyLarge: GoogleFonts.ubuntuMono(
+            color: Colors.black87,
+          ),
+          bodyMedium: GoogleFonts.ubuntuMono(
+            color: Colors.black54,
+          ),
+          headlineSmall: GoogleFonts.ubuntuMono(
             fontSize: 24,
             fontWeight: FontWeight.bold,
             color: Colors.blueAccent,
@@ -95,10 +100,15 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Free Games Tracker'),
-        centerTitle: true,
-        elevation: 4,
-        backgroundColor: Colors.blueAccent,
+        title: Text(
+          'Free Games Tracker',
+          style: GoogleFonts.ubuntuMono(
+            fontSize: 24,
+          ),
+        ),
+        centerTitle: true, // Center the title
+        elevation: 4, // Set elevation for the AppBar
+        backgroundColor: Colors.blueAccent, // Set background color for the AppBar
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -180,7 +190,7 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
                                   children: [
                                     Text(
                                       giveaway.title.replaceAll(' Giveaway', ''),
-                                      style: const TextStyle(
+                                      style: GoogleFonts.ubuntuMono(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.black87,
@@ -194,16 +204,16 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
                                         if (_selectedIndex != 2) // Check if not DLC
                                           Text(
                                             giveaway.worth,
-                                            style: const TextStyle(
+                                            style: GoogleFonts.ubuntuMono(
                                               fontSize: 16,
                                               color: Colors.red,
                                               decoration: TextDecoration.lineThrough,
                                             ),
                                           ),
                                         const SizedBox(width: 8.0),
-                                        const Text(
+                                        Text(
                                           "FREE!",
-                                          style: TextStyle(
+                                          style: GoogleFonts.ubuntuMono(
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.green,
@@ -218,7 +228,7 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
                                         const SizedBox(width: 4.0),
                                         Text(
                                           giveaway.platforms,
-                                          style: const TextStyle(
+                                          style: GoogleFonts.ubuntuMono(
                                             fontSize: 14,
                                             color: Colors.black54,
                                           ),
@@ -232,7 +242,7 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
                                         const SizedBox(width: 4.0),
                                         Text(
                                           giveaway.endDate,
-                                          style: const TextStyle(
+                                          style: GoogleFonts.ubuntuMono(
                                             fontSize: 14,
                                             color: Colors.black54,
                                           ),
@@ -244,7 +254,7 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
                                         padding: const EdgeInsets.only(top: 8.0),
                                         child: Text(
                                           '"${giveaway.description}"',
-                                          style: const TextStyle(
+                                          style: GoogleFonts.ubuntuMono(
                                             fontSize: 14,
                                             color: Colors.black54,
                                             fontStyle: FontStyle.italic,
@@ -352,33 +362,35 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
         children: [
           Expanded(
             child: TextField(
-              onChanged: (value) {
+              onChanged: (query) {
                 setState(() {
-                  _searchQuery = value.toLowerCase();
+                  _searchQuery = query.toLowerCase();
                 });
               },
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 hintText: 'Search for giveaways...',
-                hintStyle: TextStyle(color: Color(0xFF000000)),
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.search),
+                hintStyle: GoogleFonts.ubuntuMono(
+                  color: Colors.black54, // Hint text color
+                ),
+                border: const OutlineInputBorder(),
+                prefixIcon: const Icon(Icons.search),
               ),
             ),
           ),
           const SizedBox(width: 16.0),
           DropdownButton<String>(
             value: _selectedPlatform,
-            items: platforms.map((String platform) {
+            onChanged: (newValue) {
+              setState(() {
+                _selectedPlatform = newValue!;
+              });
+            },
+            items: platforms.map<DropdownMenuItem<String>>((String platform) {
               return DropdownMenuItem<String>(
                 value: platform,
                 child: Text(platform),
               );
             }).toList(),
-            onChanged: (String? newValue) {
-              setState(() {
-                _selectedPlatform = newValue!;
-              });
-            },
           ),
         ],
       ),
