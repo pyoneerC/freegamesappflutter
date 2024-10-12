@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:google_fonts/google_fonts.dart'; // Import Google Fonts
+import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'api_service.dart';
 import 'giveaway.dart';
 
@@ -73,7 +74,7 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
           _futureGiveaways = apiService.fetchDlcGiveaways();
           break;
       }
-      _lastRefreshed = DateTime.now().toLocal().toString();
+      _lastRefreshed = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
     });
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Data refreshed!')),
