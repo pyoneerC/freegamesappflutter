@@ -174,14 +174,15 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
                                     const SizedBox(height: 8.0),
                                     Row(
                                       children: [
-                                        Text(
-                                          giveaway.worth,
-                                          style: const TextStyle(
-                                            fontSize: 16,
-                                            color: Colors.red,
-                                            decoration: TextDecoration.lineThrough,
+                                        if (_selectedIndex != 2) // Check if not DLC
+                                          Text(
+                                            giveaway.worth,
+                                            style: const TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.red,
+                                              decoration: TextDecoration.lineThrough,
+                                            ),
                                           ),
-                                        ),
                                         const SizedBox(width: 8.0),
                                         const Text(
                                           "FREE!", // Discounted price or "100% off"
