@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:share_plus/share_plus.dart'; // Import the share_plus package
+import 'package:share_plus/share_plus.dart';
 import 'api_service.dart';
 import 'giveaway.dart';
 
@@ -44,13 +44,14 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
   final ApiService apiService = ApiService();
   Future<List<Giveaway>>? _futureGiveaways;
   String _lastRefreshed = '';
-  int _selectedIndex = 0; // Initially set to middle tab (Game Giveaways)
+  int _selectedIndex = 1; // Initially set to middle tab (Game Giveaways)
   String _searchQuery = '';
+  String _selectedPlatform = 'All'; // Add selected platform for filtering
+  final List<String> platforms = ['All', 'PC', 'Steam', 'Epic Games', 'Android', 'iOS'];
 
   @override
   void initState() {
     super.initState();
-    _selectedIndex = 1; // Set the initial selected index to Game Giveaways
     _refreshGiveaways();
   }
 
@@ -116,14 +117,20 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
                   } else if (snapshot.hasError) {
                     return Center(child: Text('Error: ${snapshot.error}'));
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Center(child: Text('No giveaways found.'));
+                    return const Center(child: Text('No giveaways found. 😢'));
                   }
 
                   final giveaways = snapshot.data!;
-                  // Filter giveaways based on search query
+                  // Filter giveaways based on search query and platform
                   final filteredGiveaways = giveaways.where((giveaway) {
-                    return giveaway.title.toLowerCase().contains(_searchQuery);
+                    final matchesSearch = giveaway.title.toLowerCase().contains(_searchQuery);
+                    final matchesPlatform = _selectedPlatform == 'All' || giveaway.platforms.contains(_selectedPlatform);
+                    return matchesSearch && matchesPlatform;
                   }).toList();
+
+                  if (filteredGiveaways.isEmpty) {
+                    return const Center(child: Text('No giveaways found. 😢'));
+                  }
 
                   return ListView.builder(
                     padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
@@ -186,7 +193,7 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
                                           ),
                                         const SizedBox(width: 8.0),
                                         const Text(
-                                          "FREE!", // Discounted price or "100% off"
+                                          "FREE!",
                                           style: TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
@@ -195,13 +202,13 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
                                         ),
                                         const SizedBox(width: 8.0),
                                         const Icon(
-                                          Icons.store, // Shop icon
+                                          Icons.store,
                                           size: 16,
                                           color: Colors.black54,
                                         ),
                                         const SizedBox(width: 4.0),
                                         Text(
-                                          giveaway.platforms, // Platforms string
+                                          giveaway.platforms,
                                           style: const TextStyle(
                                             fontSize: 14,
                                             color: Colors.black54,
@@ -215,7 +222,7 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
                                         ),
                                         const SizedBox(width: 4.0),
                                         Text(
-                                          giveaway.endDate, // Display end date
+                                          giveaway.endDate,
                                           style: const TextStyle(
                                             fontSize: 14,
                                             color: Colors.black54,
@@ -223,16 +230,15 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
                                         ),
                                       ],
                                     ),
-                                    // Check if it's a DLC giveaway to display the description
                                     if (_selectedIndex == 2 && giveaway.description != null)
                                       Padding(
                                         padding: const EdgeInsets.only(top: 8.0),
                                         child: Text(
-                                          '"${giveaway.description}"', // Add quotes around the description
+                                          '"${giveaway.description}"',
                                           style: const TextStyle(
                                             fontSize: 14,
                                             color: Colors.black54,
-                                            fontStyle: FontStyle.italic, // Italicize the text
+                                            fontStyle: FontStyle.italic,
                                           ),
                                           maxLines: 2,
                                           overflow: TextOverflow.ellipsis,
@@ -309,28 +315,40 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
 
   Widget _buildSearchBar() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: TextField(
-        onChanged: (value) {
-          setState(() {
-            _searchQuery = value.toLowerCase();
-          });
-        },
-        decoration: InputDecoration(
-          hintText: 'Search giveaways...',
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(30.0), // Make it round
-            borderSide: const BorderSide(color: Colors.blueAccent),
+      padding: const EdgeInsets.all(16.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextField(
+              onChanged: (value) {
+                setState(() {
+                  _searchQuery = value.toLowerCase();
+                });
+              },
+              decoration: const InputDecoration(
+                hintText: 'Search for giveaways...',
+                hintStyle: TextStyle(color: Color(0xFF000000)),
+                border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.search),
+              ),
+            ),
           ),
-          filled: true,
-          fillColor: Colors.white,
-          prefixIcon: const Icon(Icons.search, color: Colors.black54),
-          contentPadding: const EdgeInsets.all(16.0),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(30.0),
-            borderSide: const BorderSide(color: Colors.blueAccent),
+          const SizedBox(width: 16.0),
+          DropdownButton<String>(
+            value: _selectedPlatform,
+            items: platforms.map((String platform) {
+              return DropdownMenuItem<String>(
+                value: platform,
+                child: Text(platform),
+              );
+            }).toList(),
+            onChanged: (String? newValue) {
+              setState(() {
+                _selectedPlatform = newValue!;
+              });
+            },
           ),
-        ),
+        ],
       ),
     );
   }
