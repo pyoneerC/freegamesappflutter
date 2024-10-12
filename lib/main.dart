@@ -43,7 +43,7 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
   final ApiService apiService = ApiService();
   Future<List<Giveaway>>? _futureGiveaways;
   String _lastRefreshed = '';
-  String _selectedType = 'giveaways'; // Default selection
+  int _selectedIndex = 0; // Track the selected index for the bottom navigation
 
   @override
   void initState() {
@@ -53,14 +53,14 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
 
   Future<void> _refreshGiveaways() async {
     setState(() {
-      switch (_selectedType) {
-        case 'giveaways':
+      switch (_selectedIndex) {
+        case 0: // Giveaways
           _futureGiveaways = apiService.fetchGiveaways();
           break;
-        case 'other-giveaways':
+        case 1: // Other Giveaways
           _futureGiveaways = apiService.fetchOtherGiveaways();
           break;
-        case 'dlc-giveaways':
+        case 2: // DLC Giveaways
           _futureGiveaways = apiService.fetchDlcGiveaways();
           break;
       }
@@ -71,12 +71,19 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
     );
   }
 
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+      _refreshGiveaways(); // Refresh data on selection change
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Free Games',
+          'Free Games Tracker',
           style: TextStyle(
             color: Colors.white,
             fontSize: 24,
@@ -97,48 +104,6 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
         ),
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: DropdownButton<String>(
-                      value: _selectedType,
-                      items: const [
-                        DropdownMenuItem(
-                          value: 'giveaways',
-                          child: Text('Giveaways'),
-                        ),
-                        DropdownMenuItem(
-                          value: 'other-giveaways',
-                          child: Text('Other Giveaways'),
-                        ),
-                        DropdownMenuItem(
-                          value: 'dlc-giveaways',
-                          child: Text('DLC Giveaways'),
-                        ),
-                      ],
-                      onChanged: (value) {
-                        if (value != null) {
-                          setState(() {
-                            _selectedType = value;
-                            _refreshGiveaways(); // Refresh data on selection change
-                          });
-                        }
-                      },
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  IconButton(
-                    icon: const Icon(Icons.refresh),
-                    onPressed: _refreshGiveaways,
-                    tooltip: 'Refresh Data',
-                    color: Colors.white,
-                  ),
-                ],
-              ),
-            ),
             Expanded(
               child: FutureBuilder<List<Giveaway>>(
                 future: _futureGiveaways,
@@ -170,13 +135,12 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
                             children: [
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(8.0),
-                                child: FadeInImage(
-                                  placeholder: const AssetImage('assets/placeholder.png'), // Add your placeholder image here
-                                  image: NetworkImage(giveaway.imageUrl),
+                                child: Image.network(
+                                  "https://th.bing.com/th/id/OIP.zAibgViO82lC2GvdEFnX3QAAAA?w=160&h=180&c=7&r=0&o=5&pid=1.7",
                                   width: 100,
                                   height: 100,
                                   fit: BoxFit.cover,
-                                  imageErrorBuilder: (context, error, stackTrace) {
+                                  errorBuilder: (context, error, stackTrace) {
                                     return Container(
                                       width: 100,
                                       height: 100,
@@ -214,7 +178,7 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
                                         ),
                                         const SizedBox(width: 8.0),
                                         const Text(
-                                          "\$0!", // Discounted price or "100% off"
+                                          "FREE!", // Discounted price or "100% off"
                                           style: TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
@@ -256,6 +220,27 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
             ),
           ],
         ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.gamepad),
+            label: 'Game Giveaways',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.star),
+            label: 'Other Giveaways',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.card_giftcard),
+            label: 'DLC Giveaways',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.blueAccent,
+        unselectedItemColor: Colors.black54,
+        onTap: _onItemTapped,
+        type: BottomNavigationBarType.fixed,
       ),
     );
   }
