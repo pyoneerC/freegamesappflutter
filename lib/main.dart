@@ -193,6 +193,21 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
                                           ),
                                         ),
                                         const SizedBox(width: 8.0),
+                                        // Add shop icon and platforms string here
+                                        const Icon(
+                                          Icons.store, // Shop icon
+                                          size: 16,
+                                          color: Colors.black54,
+                                        ),
+                                        const SizedBox(width: 4.0),
+                                        Text(
+                                          giveaway.platforms, // Platforms string
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.black54,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 8.0),
                                         // Clock icon for end date
                                         const Icon(
                                           Icons.access_time,
@@ -240,6 +255,7 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
                       );
                     },
                   );
+
                 },
               ),
             ),
