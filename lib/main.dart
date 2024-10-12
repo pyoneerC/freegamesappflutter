@@ -157,6 +157,28 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
                     itemCount: filteredGiveaways.length,
                     itemBuilder: (context, index) {
                       final giveaway = filteredGiveaways[index];
+
+                      // Parse the end date using the non-traditional format "Oct 17 2024"
+                      final DateFormat dateFormat = DateFormat('MMM d yyyy');
+                      final now = DateTime.now();
+                      Color endDateColor = Colors.black54;
+
+                      if (_selectedIndex == 1) {
+
+                      final endDate = dateFormat.parse(giveaway.endDate);
+
+                      // Only apply special color logic for Game Giveaways
+                        final daysLeft = endDate.difference(now).inDays;
+
+                        if (daysLeft <= 1) {
+                          endDateColor = Colors.red;
+                        } else if (daysLeft <= 2) {
+                          endDateColor = Colors.orange;
+                        } else if (daysLeft <= 3) {
+                          endDateColor = Colors.yellow;
+                        }
+                      }
+
                       return Card(
                         margin: const EdgeInsets.symmetric(vertical: 8.0),
                         elevation: 8.0,
@@ -245,7 +267,7 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
                                           giveaway.endDate,
                                           style: GoogleFonts.ubuntuMono(
                                             fontSize: 14,
-                                            color: Colors.black54,
+                                            color: endDateColor,
                                           ),
                                         ),
                                       ],
@@ -276,7 +298,9 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
                                       if (await canLaunch(url)) {
                                         await launch(url);
                                       } else {
-                                        throw 'Could not launch $url';
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(content: Text('Could not launch URL')),
+                                        );
                                       }
                                     },
                                   ),
@@ -363,11 +387,6 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
         children: [
           Expanded(
             child: TextField(
-              onChanged: (query) {
-                setState(() {
-                  _searchQuery = query.toLowerCase();
-                });
-              },
               decoration: InputDecoration(
                 hintText: 'Search for giveaways...',
                 hintStyle: GoogleFonts.ubuntuMono(
@@ -376,22 +395,27 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
                 border: const OutlineInputBorder(),
                 prefixIcon: const Icon(Icons.search),
               ),
+              onChanged: (value) {
+                setState(() {
+                  _searchQuery = value.toLowerCase();
+                });
+              },
             ),
           ),
           const SizedBox(width: 16.0),
           DropdownButton<String>(
             value: _selectedPlatform,
-            onChanged: (newValue) {
-              setState(() {
-                _selectedPlatform = newValue!;
-              });
-            },
-            items: platforms.map<DropdownMenuItem<String>>((String platform) {
+            items: platforms.map((platform) {
               return DropdownMenuItem<String>(
                 value: platform,
                 child: Text(platform),
               );
             }).toList(),
+            onChanged: (value) {
+              setState(() {
+                _selectedPlatform = value!;
+              });
+            },
           ),
         ],
       ),
