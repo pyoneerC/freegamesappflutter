@@ -82,6 +82,15 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
     });
   }
 
+  Future<void> _launchURL() async {
+    const url = 'https://maxcomperatore.com'; // Your webpage URL
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -280,8 +289,31 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GestureDetector(
+                    onTap: _launchURL, // Navigate to your webpage
+                    child: const Text(
+                      'Made by Max Comperatore',
+                      style: TextStyle(
+                        color: Colors.black54,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8.0),
+                  IconButton(
+                    icon: const Icon(Icons.open_in_new),
+                    onPressed: _launchURL, // Navigate to your webpage
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
               child: Text(
-                'Last Refreshed: $_lastRefreshed\nMade by Max Comperatore',
+                'Last refreshed: $_lastRefreshed',
                 style: const TextStyle(color: Colors.black54),
                 textAlign: TextAlign.center,
               ),
