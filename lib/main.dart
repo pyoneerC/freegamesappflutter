@@ -100,10 +100,14 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
 
   Future<void> _launchURL() async {
     final url = Uri.parse('https://maxcomperatore.com'); // Your webpage URL
-    if (await canLaunchUrl(url)) {
+    try {
       await launchUrl(url);
-    } else {
-      throw 'Could not launch $url';
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Could not launch URL')),
+        );
+      }
     }
   }
 
@@ -330,17 +334,19 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
                                     onPressed: () async {
                                       final url = Uri.tryParse(
                                           giveaway.openGiveawayUrl);
-                                      if (url != null &&
-                                          await canLaunchUrl(url)) {
-                                        await launchUrl(url);
-                                      } else {
-                                        if (context.mounted) {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            const SnackBar(
+                                      if (url != null) {
+                                        try {
+                                          await launchUrl(url);
+                                        } catch (e) {
+                                          if (context.mounted) {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              const SnackBar(
                                                 content: Text(
-                                                    'Could not launch URL')),
-                                          );
+                                                    'Could not launch URL'),
+                                              ),
+                                            );
+                                          }
                                         }
                                       }
                                     },
