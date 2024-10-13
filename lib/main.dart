@@ -66,7 +66,9 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
   @override
   void initState() {
     super.initState();
-    _refreshGiveaways();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _refreshGiveaways();
+    });
   }
 
   Future<void> _refreshGiveaways() async {
