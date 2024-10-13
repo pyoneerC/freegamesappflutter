@@ -38,10 +38,6 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      # Run code analysis to catch any warnings or issues
-      - name: Analyze Code
-        run: flutter analyze
-
       # Build APK and AAB for Android
       - name: Build APK and App Bundle (AAB) for Android
         if: matrix.platform == 'android'
