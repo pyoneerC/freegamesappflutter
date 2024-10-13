@@ -73,11 +73,3 @@ jobs:
         with:
           name: web-build
           path: build/web
-
-      # Deploy Web Build to GitHub Pages
-      - name: Deploy to GitHub Pages
-        if: matrix.platform == 'web'
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: build/web
