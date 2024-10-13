@@ -192,7 +192,7 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
                         } else if (daysLeft <= 2) {
                           endDateColor = Colors.orange;
                         } else if (daysLeft <= 3) {
-                          endDateColor = Colors.yellow;
+                          endDateColor = Colors.orangeAccent;
                         }
                       }
 
