@@ -246,16 +246,19 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
                                       children: [
                                         if (_selectedIndex !=
                                             2) // Check if not DLC
-                                          Text(
-                                            giveaway.worth,
-                                            style: GoogleFonts.ubuntuMono(
-                                              fontSize: 16,
-                                              color: Colors.red,
-                                              decoration:
-                                                  TextDecoration.lineThrough,
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                right: 8.0),
+                                            child: Text(
+                                              giveaway.worth,
+                                              style: GoogleFonts.ubuntuMono(
+                                                fontSize: 16,
+                                                color: Colors.red,
+                                                decoration:
+                                                    TextDecoration.lineThrough,
+                                              ),
                                             ),
                                           ),
-                                        const SizedBox(width: 8.0),
                                         Text(
                                           "FREE!",
                                           style: GoogleFonts.ubuntuMono(
