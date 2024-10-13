@@ -223,7 +223,8 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
                               const SizedBox(width: 16.0),
                               Expanded(
                                 child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
                                   children: [
                                     Text(
                                       giveaway.title
@@ -259,21 +260,35 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
                                             color: Colors.green,
                                           ),
                                         ),
-                                        const SizedBox(width: 8.0),
-                                        const Icon(
-                                          Icons.store,
-                                          size: 16,
-                                          color: Colors.black54,
-                                        ),
-                                        const SizedBox(width: 4.0),
-                                        Text(
-                                          giveaway.platforms,
-                                          style: GoogleFonts.ubuntuMono(
-                                            fontSize: 14,
+                                      ],
+                                    ),
+                                    Wrap(
+                                      spacing: 4.0,
+                                      crossAxisAlignment:
+                                          WrapCrossAlignment.center,
+                                      children: [
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(right: 4.0),
+                                          child: const Icon(
+                                            Icons.store,
+                                            size: 16,
                                             color: Colors.black54,
                                           ),
                                         ),
-                                        const SizedBox(width: 8.0),
+                                        for (String platform
+                                            in giveaway.platforms.split(', '))
+                                          Text(
+                                            platform,
+                                            style: GoogleFonts.ubuntuMono(
+                                              fontSize: 14,
+                                              color: Colors.black54,
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
                                         const Icon(
                                           Icons.access_time,
                                           size: 16,
