@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 import 'api_service.dart';
 import 'giveaway.dart';
 
@@ -43,7 +44,7 @@ class GiveawaysScreen extends StatefulWidget {
   const GiveawaysScreen({super.key});
 
   @override
-  _GiveawaysScreenState createState() => _GiveawaysScreenState();
+  State<GiveawaysScreen> createState() => _GiveawaysScreenState();
 }
 
 class _GiveawaysScreenState extends State<GiveawaysScreen> {
@@ -53,12 +54,21 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
   int _selectedIndex = 1; // Initially set to middle tab (Game Giveaways)
   String _searchQuery = '';
   String _selectedPlatform = 'All'; // Add selected platform for filtering
-  final List<String> platforms = ['All', 'PC', 'Steam', 'Epic Games', 'Android', 'iOS'];
+  final List<String> platforms = [
+    'All',
+    'PC',
+    'Steam',
+    'Epic Games',
+    'Android',
+    'iOS'
+  ];
 
   @override
   void initState() {
     super.initState();
-    _refreshGiveaways();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _refreshGiveaways();
+    });
   }
 
   Future<void> _refreshGiveaways() async {
@@ -89,11 +99,15 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
   }
 
   Future<void> _launchURL() async {
-    const url = 'https://maxcomperatore.com'; // Your webpage URL
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
+    final url = Uri.parse('https://maxcomperatore.com'); // Your webpage URL
+    try {
+      await launchUrl(url);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Could not launch URL')),
+        );
+      }
     }
   }
 
@@ -109,7 +123,8 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
         ),
         centerTitle: true, // Center the title
         elevation: 4, // Set elevation for the AppBar
-        backgroundColor: Colors.blueAccent, // Set background color for the AppBar
+        backgroundColor:
+            Colors.blueAccent, // Set background color for the AppBar
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -143,8 +158,10 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
                   final giveaways = snapshot.data!;
                   // Filter giveaways based on search query and platform
                   final filteredGiveaways = giveaways.where((giveaway) {
-                    final matchesSearch = giveaway.title.toLowerCase().contains(_searchQuery);
-                    final matchesPlatform = _selectedPlatform == 'All' || giveaway.platforms.contains(_selectedPlatform);
+                    final matchesSearch =
+                        giveaway.title.toLowerCase().contains(_searchQuery);
+                    final matchesPlatform = _selectedPlatform == 'All' ||
+                        giveaway.platforms.contains(_selectedPlatform);
                     return matchesSearch && matchesPlatform;
                   }).toList();
 
@@ -153,7 +170,8 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
                   }
 
                   return ListView.builder(
-                    padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 16.0, horizontal: 8.0),
                     itemCount: filteredGiveaways.length,
                     itemBuilder: (context, index) {
                       final giveaway = filteredGiveaways[index];
@@ -164,10 +182,9 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
                       Color endDateColor = Colors.black54;
 
                       if (_selectedIndex == 1) {
+                        final endDate = dateFormat.parse(giveaway.endDate);
 
-                      final endDate = dateFormat.parse(giveaway.endDate);
-
-                      // Only apply special color logic for Game Giveaways
+                        // Only apply special color logic for Game Giveaways
                         final daysLeft = endDate.difference(now).inDays;
 
                         if (daysLeft <= 1) {
@@ -201,7 +218,8 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
                                       width: 100,
                                       height: 100,
                                       color: Colors.grey[200],
-                                      child: const Center(child: Icon(Icons.error)),
+                                      child: const Center(
+                                          child: Icon(Icons.error)),
                                     );
                                   },
                                 ),
@@ -209,10 +227,12 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
                               const SizedBox(width: 16.0),
                               Expanded(
                                 child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
                                   children: [
                                     Text(
-                                      giveaway.title.replaceAll(' Giveaway', ''),
+                                      giveaway.title
+                                          .replaceAll(' Giveaway', ''),
                                       style: GoogleFonts.ubuntuMono(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
@@ -224,16 +244,21 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
                                     const SizedBox(height: 8.0),
                                     Row(
                                       children: [
-                                        if (_selectedIndex != 2) // Check if not DLC
-                                          Text(
-                                            giveaway.worth,
-                                            style: GoogleFonts.ubuntuMono(
-                                              fontSize: 16,
-                                              color: Colors.red,
-                                              decoration: TextDecoration.lineThrough,
+                                        if (_selectedIndex !=
+                                            2) // Check if not DLC
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                right: 8.0),
+                                            child: Text(
+                                              giveaway.worth,
+                                              style: GoogleFonts.ubuntuMono(
+                                                fontSize: 16,
+                                                color: Colors.red,
+                                                decoration:
+                                                    TextDecoration.lineThrough,
+                                              ),
                                             ),
                                           ),
-                                        const SizedBox(width: 8.0),
                                         Text(
                                           "FREE!",
                                           style: GoogleFonts.ubuntuMono(
@@ -242,21 +267,35 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
                                             color: Colors.green,
                                           ),
                                         ),
-                                        const SizedBox(width: 8.0),
-                                        const Icon(
-                                          Icons.store,
-                                          size: 16,
-                                          color: Colors.black54,
-                                        ),
-                                        const SizedBox(width: 4.0),
-                                        Text(
-                                          giveaway.platforms,
-                                          style: GoogleFonts.ubuntuMono(
-                                            fontSize: 14,
+                                      ],
+                                    ),
+                                    Wrap(
+                                      spacing: 4.0,
+                                      crossAxisAlignment:
+                                          WrapCrossAlignment.center,
+                                      children: [
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(right: 4.0),
+                                          child: const Icon(
+                                            Icons.store,
+                                            size: 16,
                                             color: Colors.black54,
                                           ),
                                         ),
-                                        const SizedBox(width: 8.0),
+                                        for (String platform
+                                            in giveaway.platforms.split(', '))
+                                          Text(
+                                            platform,
+                                            style: GoogleFonts.ubuntuMono(
+                                              fontSize: 14,
+                                              color: Colors.black54,
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
                                         const Icon(
                                           Icons.access_time,
                                           size: 16,
@@ -272,9 +311,11 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
                                         ),
                                       ],
                                     ),
-                                    if (_selectedIndex == 2 && giveaway.description != null)
+                                    if (_selectedIndex == 2 &&
+                                        giveaway.description != null)
                                       Padding(
-                                        padding: const EdgeInsets.only(top: 8.0),
+                                        padding:
+                                            const EdgeInsets.only(top: 8.0),
                                         child: Text(
                                           '"${giveaway.description}"',
                                           style: GoogleFonts.ubuntuMono(
@@ -294,13 +335,22 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
                                   IconButton(
                                     icon: const Icon(Icons.open_in_new),
                                     onPressed: () async {
-                                      final url = giveaway.openGiveawayUrl;
-                                      if (await canLaunch(url)) {
-                                        await launch(url);
-                                      } else {
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          const SnackBar(content: Text('Could not launch URL')),
-                                        );
+                                      final url = Uri.tryParse(
+                                          giveaway.openGiveawayUrl);
+                                      if (url != null) {
+                                        try {
+                                          await launchUrl(url);
+                                        } catch (e) {
+                                          if (context.mounted) {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              const SnackBar(
+                                                content: Text(
+                                                    'Could not launch URL'),
+                                              ),
+                                            );
+                                          }
+                                        }
                                       }
                                     },
                                   ),
@@ -308,7 +358,8 @@ class _GiveawaysScreenState extends State<GiveawaysScreen> {
                                     icon: const Icon(Icons.share),
                                     onPressed: () {
                                       final url = giveaway.openGiveawayUrl;
-                                      Share.share('Check out this giveaway: $url');
+                                      Share.share(
+                                          'Check out this giveaway: $url');
                                     },
                                   ),
                                 ],
