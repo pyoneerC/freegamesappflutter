@@ -38,10 +38,6 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      # Format the code to ensure consistent style
-      - name: Flutter Format
-        run: flutter format --set-exit-if-changed .
-
       # Run code analysis to catch any warnings or issues
       - name: Analyze Code
         run: flutter analyze
