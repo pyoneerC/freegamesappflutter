@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    name: Build Flutter for Android and Web
+    name: Build Flutter
     runs-on: ubuntu-latest
 
     strategy:
@@ -15,44 +15,77 @@ jobs:
         platform: [android, web]
 
     steps:
+      # Checkout the repository
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      # Cache Flutter dependencies to speed up builds
+      - name: Cache Flutter dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.pub-cache
+          key: ${{ runner.os }}-flutter-${{ hashFiles('pubspec.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-flutter-
+
+      # Set up Flutter
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: 3.24.3
 
+      # Install dependencies
       - name: Install dependencies
         run: flutter pub get
 
+      # Format the code to ensure consistent style
+      - name: Flutter Format
+        run: flutter format --set-exit-if-changed .
+
+      # Run code analysis to catch any warnings or issues
+      - name: Analyze Code
+        run: flutter analyze
+
+      # Build APK and AAB for Android
       - name: Build APK and App Bundle (AAB) for Android
         if: matrix.platform == 'android'
         run: |
           flutter build apk --release
           flutter build appbundle --release
 
+      # Build for Web
       - name: Build Web
         if: matrix.platform == 'web'
         run: flutter build web --release
 
+      # Upload APK
       - name: Upload APK
         if: matrix.platform == 'android'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: apk
           path: build/app/outputs/flutter-apk/app-release.apk
 
+      # Upload AAB
       - name: Upload AAB
         if: matrix.platform == 'android'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: app-bundle
           path: build/app/outputs/bundle/release/app-release.aab
 
+      # Upload Web Build
       - name: Upload Web Build
         if: matrix.platform == 'web'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: web-build
           path: build/web
+
+      # Deploy Web Build to GitHub Pages
+      - name: Deploy to GitHub Pages
+        if: matrix.platform == 'web'
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: build/web
