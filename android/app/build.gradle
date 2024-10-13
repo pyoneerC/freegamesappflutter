@@ -6,9 +6,9 @@ plugins {
 }
 
 android {
-    namespace = "com.example.freegamesapp"
+    namespace = "com.maxcompe.freegamesapp"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    ndkVersion = "25.1.8937393"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8

@@ -1,0 +1,58 @@
+name: Build Flutter App
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build Flutter for Android and Web
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        platform: [android, web]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 'stable'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build APK and App Bundle (AAB) for Android
+        if: matrix.platform == 'android'
+        run: |
+          flutter build apk --release
+          flutter build appbundle --release
+
+      - name: Build Web
+        if: matrix.platform == 'web'
+        run: flutter build web --release
+
+      - name: Upload APK
+        if: matrix.platform == 'android'
+        uses: actions/upload-artifact@v3
+        with:
+          name: apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+      - name: Upload AAB
+        if: matrix.platform == 'android'
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-bundle
+          path: build/app/outputs/bundle/release/app-release.aab
+
+      - name: Upload Web Build
+        if: matrix.platform == 'web'
+        uses: actions/upload-artifact@v3
+        with:
+          name: web-build
+          path: build/web
