@@ -1,4 +1,4 @@
-package com.example.freegamesapp
+package com.maxcompe.freegamesapp
 
 import io.flutter.embedding.android.FlutterActivity
 
