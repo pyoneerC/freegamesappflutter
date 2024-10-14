@@ -87,7 +87,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: windows-build
-          path: build/windows/x64/runner/Release/freegamesapp.exe
+          path: build/windows/x64/runner/Release/*
 
       # Deploy to Netlify using Netlify CLI
       - name: Install Netlify CLI
