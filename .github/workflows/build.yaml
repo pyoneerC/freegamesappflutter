@@ -45,8 +45,8 @@ jobs:
           flutter build apk --release
           flutter build appbundle --release
 
-      # Sign the APK and AAB
-      - name: Sign app APK and AAB
+      # Sign the AAB
+      - name: Sign AAB
         if: matrix.platform == 'android'
         uses: r0adkll/sign-android-release@v1
         with:
@@ -54,7 +54,7 @@ jobs:
           alias: ${{ secrets.ALIAS }}
           keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
-          releaseDirectory: ''
+          releaseDirectory: build/app/outputs/bundle/release
 
       # Build for Web
       - name: Build Web
