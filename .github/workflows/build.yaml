@@ -39,32 +39,43 @@ jobs:
         run: flutter pub get
 
       # Build APK and AAB for Android
-      - name: Build APK and App Bundle (AAB) for Android
+      - name: Build APK and App Bundle for Android
         if: matrix.platform == 'android'
         run: |
           flutter build apk --release
           flutter build appbundle --release
+
+      # Sign the APK and AAB
+      - name: Sign app APK and AAB
+        if: matrix.platform == 'android'
+        uses: r0adkll/sign-android-release@v1
+        with:
+          releaseDirectory: app/build/outputs/apk/release
+          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
+          alias: ${{ secrets.ALIAS }}
+          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
 
       # Build for Web
       - name: Build Web
         if: matrix.platform == 'web'
         run: flutter build web --release
 
-      # Upload APK
-      - name: Upload APK
+      # Upload Signed APK
+      - name: Upload Signed APK
         if: matrix.platform == 'android'
         uses: actions/upload-artifact@v4
         with:
-          name: apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          name: signed-apk
+          path: ${{ steps.sign_app.outputs.signedReleaseFile }}
 
-      # Upload AAB
-      - name: Upload AAB
+      # Upload Signed AAB
+      - name: Upload Signed AAB
         if: matrix.platform == 'android'
         uses: actions/upload-artifact@v4
         with:
-          name: app-bundle
-          path: build/app/outputs/bundle/release/app-release.aab
+          name: signed-aab
+          path: ${{ steps.sign_app.outputs.signedReleaseFile }}
 
       # Upload Web Build
       - name: Upload Web Build
