@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.freegamesapp"
+    namespace = "com.maxcompe.freegamesapp"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
