@@ -19,15 +19,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Cache Flutter dependencies to speed up builds
-      - name: Cache Flutter dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.pub-cache
-          key: ${{ runner.os }}-flutter-${{ hashFiles('pubspec.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-flutter-
-
       # Set up Flutter
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
@@ -96,7 +87,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: windows-build
-          path: build/windows/runner/Release/
+          path: build/windows/x64/runner/Release/freegamesapp.exe
 
       # Deploy to Netlify using Netlify CLI
       - name: Install Netlify CLI
