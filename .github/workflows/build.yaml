@@ -85,12 +85,13 @@ jobs:
           name: web-build
           path: build/web
 
-      # Deploy to Netlify
+      # Deploy to Netlify using Netlify CLI
+      - name: Install Netlify CLI
+        if: matrix.platform == 'web'
+        run: npm install -g netlify-cli
+
       - name: Netlify Deploy
         if: matrix.platform == 'web'
-        uses: jsmrcaga/action-netlify-deploy@v2.2.0
-        with:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-          NETLIFY_DEPLOY_TO_PROD: true
-          build_directory: build/web
+        run: |
+          netlify deploy --prod --dir=build/web --site=${{ secrets.NETLIFY_SITE_ID }} --auth=${{ secrets.NETLIFY_AUTH_TOKEN }}
+          
