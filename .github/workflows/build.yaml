@@ -66,16 +66,16 @@ jobs:
         if: matrix.platform == 'android'
         uses: actions/upload-artifact@v4
         with:
-          name: signed-apk
-          path: ${{ steps.sign_app.outputs.signedReleaseFile }}
+          name: apk
+          path: build/app/outputs/flutter-apk/app-release.apk
 
       # Upload Signed AAB
       - name: Upload Signed AAB
         if: matrix.platform == 'android'
         uses: actions/upload-artifact@v4
         with:
-          name: signed-aab
-          path: ${{ steps.sign_app.outputs.signedReleaseFile }}
+          name: app-bundle
+          path: build/app/outputs/bundle/release/app-release.aab
 
       # Upload Web Build
       - name: Upload Web Build
