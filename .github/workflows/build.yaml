@@ -59,7 +59,7 @@ jobs:
       # Build for Web
       - name: Build Web
         if: matrix.platform == 'web'
-        run: flutter build web --release
+        run: flutter build web --release --web-renderer html
 
       # Upload Signed APK
       - name: Upload Signed APK
