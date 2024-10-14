@@ -42,8 +42,8 @@ jobs:
       - name: Build APK and App Bundle for Android
         if: matrix.platform == 'android'
         run: |
-          flutter build apk --release
-          flutter build appbundle --release
+          flutter build apk --release --verbose
+          flutter build appbundle --release --verbose
 
       # Sign the AAB
       - name: Sign AAB
@@ -59,7 +59,7 @@ jobs:
       # Build for Web
       - name: Build Web
         if: matrix.platform == 'web'
-        run: flutter build web --release --web-renderer html
+        run: flutter build web --release --web-renderer html --verbose
 
       # Upload Signed APK
       - name: Upload Signed APK
