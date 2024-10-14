@@ -8,12 +8,11 @@ on:
 jobs:
   build:
     name: Build Flutter
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.platform == 'windows' && 'windows-latest' || 'ubuntu-latest' }}
 
     strategy:
       matrix:
         platform: [android, web, windows]
-        os: [ubuntu-latest, ubuntu-latest, windows-latest]
 
     steps:
       # Checkout the repository
