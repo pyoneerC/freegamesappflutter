@@ -36,6 +36,17 @@ jobs:
           flutter build apk --release --verbose
           flutter build appbundle --release --verbose
 
+      # Sign the APK
+      - name: Sign APK
+        if: matrix.platform == 'android'
+        uses: r0adkll/sign-android-release@v1
+        with:
+          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
+          alias: ${{ secrets.ALIAS }}
+          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
+          releaseDirectory: build/app/outputs/flutter-apk
+
       # Sign the AAB
       - name: Sign AAB
         if: matrix.platform == 'android'
